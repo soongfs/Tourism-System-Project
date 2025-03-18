@@ -1,5 +1,7 @@
+package com.example.tourism;
+
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
