@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>旅游路线规划系统</title>
+    <!-- Leaflet地图库 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map { height: 600px; }
+        .control-panel { padding: 20px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+<div class="control-panel">
+    <input type="text" id="start" placeholder="起点（如：故宫）">
+    <input type="text" id="end" placeholder="终点（如：天坛）">
+    <button onclick="calculatePath()">规划路线</button>
+    <div id="result"></div>
+</div>
+<div id="map"></div>
+
+<script>
+    // 初始化地图（以北京为中心）
+    const map = L.map('map').setView([39.9042, 116.4074], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // 调用后端API
+    async function calculatePath() {
+        const start = document.getElementById('start').value;
+        const end = document.getElementById('end').value;
+
+        const response = await fetch(`http://localhost:8080/api/path?startName=${start}&endName=${end}`);
+        const data = await response.json();
+
+        // 清空地图
+        map.eachLayer(layer => {
+            if (layer instanceof L.Polyline) map.removeLayer(layer);
+        });
+
+        // 绘制路径
+        const pathCoords = data.path.map(node => [node.lat, node.lon]);
+        L.polyline(pathCoords, {color: 'red'}).addTo(map);
+
+        // 显示结果
+        document.getElementById('result').innerHTML = `
+                总距离：${data.distance.toFixed(2)}公里<br>
+                途经：${data.path.map(n => n.name).join(' → ')}
+            `;
+    }
+</script>
+</body>
+</html>
