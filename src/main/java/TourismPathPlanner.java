@@ -17,7 +17,7 @@ public class TourismPathPlanner {
     // =======================================================
 
     // 定义节点类
-    static class Node {
+    public static class Node {
         String id;
         String name;
         double lon;
@@ -33,7 +33,7 @@ public class TourismPathPlanner {
     }
 
     // 定义图结构
-    static class Graph {
+    public static class Graph {
         Map<String, Node> nodes = new HashMap<>();
 
         void addNode(Node node) {
@@ -61,7 +61,7 @@ public class TourismPathPlanner {
     }
 
     // 路径规划器（Dijkstra算法）
-    static class PathFinder {
+    public static class PathFinder {
         static class PathResult {
             double distance;
             List<Node> path;
@@ -116,8 +116,8 @@ public class TourismPathPlanner {
             Graph graph = loadGraphFromDB();
 
             // 2. 查找起点和终点
-            Node start = findNodeByName(graph, "天安门");
-            Node end = findNodeByName(graph, "什刹海");
+            Node start = findNodeByName(graph, "南锣鼓巷");
+            Node end = findNodeByName(graph, "中山公园");
 
             // 3. 计算最短路径
             PathFinder.PathResult result = new PathFinder().shortestPath(graph, start, end);
@@ -135,7 +135,7 @@ public class TourismPathPlanner {
     }
 
     // 从数据库加载数据并建图
-    private static Graph loadGraphFromDB() throws SQLException {
+    public static Graph loadGraphFromDB() throws SQLException {
         Graph graph = new Graph();
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -169,7 +169,7 @@ public class TourismPathPlanner {
     }
 
     // 通过名称查找节点
-    private static Node findNodeByName(Graph graph, String name) {
+    public static Node findNodeByName(Graph graph, String name) {
         return graph.nodes.values().stream()
                 .filter(node -> node.name.contains(name))
                 .findFirst()
